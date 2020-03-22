@@ -16,8 +16,10 @@ RUN apk add --no-cache \
       apache2-ctl \
       apache2-http2 \
       curl \
+      git \
       grep \
       imagemagick \
+      openssh-client \
       php7 \
       php7-apache2 \
       php7-bz2 \
@@ -29,8 +31,8 @@ RUN apk add --no-cache \
       php7-opcache \
       php7-openssl \
       php7-pdo_mysql \
-      php7-posix \
       php7-phar \
+      php7-posix \
       php7-session \
       php7-tidy \
       php7-tokenizer \
@@ -74,15 +76,6 @@ ONBUILD ARG DB_NAME=db_neos
 ONBUILD ARG DB_PASS
 ONBUILD ARG DB_PORT=3306
 ONBUILD ARG DB_USER=usr_neos
-
-# Validate that all build arguments are set
-ONBUILD RUN test -n "${DB_HOST}"
-ONBUILD RUN test -n "${DB_NAME}"
-ONBUILD RUN test -n "${DB_PASS}"
-ONBUILD RUN test -n "${DB_PORT}"
-ONBUILD RUN test -n "${DB_USER}"
-
-# Pass the build arguments to the environment
 ONBUILD ENV DB_HOST "${DB_HOST}"
 ONBUILD ENV DB_NAME "${DB_NAME}"
 ONBUILD ENV DB_PASS "${DB_PASS}"
@@ -90,8 +83,4 @@ ONBUILD ENV DB_USER "${DB_USER}"
 ONBUILD ENV DB_PORT "${DB_PORT}"
 
 # Apply dynamic values to Neos configuration
-ONBUILD RUN sed -i "s/%DB_HOST/${DB_HOST}/" /var/www/neos/Configuration/Settings.yaml && \
-            sed -i "s/%DB_NAME/${DB_NAME}/" /var/www/neos/Configuration/Settings.yaml && \
-            sed -i "s/%DB_PASSWORD/${DB_PASS}/" /var/www/neos/Configuration/Settings.yaml && \
-            sed -i "s/%DB_USER/${DB_USER}/" /var/www/neos/Configuration/Settings.yaml && \
-            sed -i "s/%DB_PORT/${DB_PORT}/" /var/www/neos/Configuration/Settings.yaml
+ONBUILD RUN sed -i "s/%DB_HOST/${DB_HOST}/g s/%DB_NAME/${DB_NAME}/g s/%DB_PASS/${DB_PASS}/g s/%DB_USER/${DB_USER}/g s/%DB_PORT/${DB_PORT}/g" /var/www/neos/Configuration/Settings.yaml

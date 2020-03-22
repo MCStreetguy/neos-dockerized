@@ -14,15 +14,23 @@ if [ ! -f Packages/Libraries/autoload.php ]; then
   /usr/local/bin/composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --no-interaction
 fi
 
-if [ ! -f Data/Persistent/.installed_neos ]; then
-  # Activate 'Production' context
-  sed -i 's/# SetEnv FLOW_CONTEXT Production/SetEnv FLOW_CONTEXT Production/' ./Web/.htaccess
+if [ ! -d /var/run/neos ]; then
+  mkdir /var/run/neos
+fi
 
-  # Fix sudo executable in file permissions script
+if [ ! -f /var/run/neos/setfilepermissions.sh ]; then
+  # Create fixed Neos file permissions script
   mkdir -p /var/run/neos
   cp ./Packages/Framework/Neos.Flow/Scripts/setfilepermissions.sh /var/run/neos/setfilepermissions.sh
   sed -i 's/sudo -u/s6-setuidgid/' /var/run/neos/setfilepermissions.sh
   sed -i 's/sudo //' /var/run/neos/setfilepermissions.sh
+fi
+
+if [ ! -f Data/.installed_neos ]; then
+  if [ -z "$FLOW_CONTEXT" ]; then
+    # Activate 'Production' context if no context is set
+    sed -i 's/# SetEnv FLOW_CONTEXT Production/SetEnv FLOW_CONTEXT Production/' ./Web/.htaccess
+  fi
 
   # Install Neos
   ( exec /var/run/neos/setfilepermissions.sh root apache apache )
@@ -58,28 +66,18 @@ if [ ! -f Data/Persistent/.installed_neos ]; then
     unset SCHEME
     unset PORT
   fi
-
-  # Refresh assets and resources
-  echo "Checking if resource data exists for all known resource objects ..."
-  ./flow resource:clean &>/dev/null
-  ./flow resource:publish
-  echo "Importing resources ..."
-  ./flow media:importresources &>/dev/null
-
-  # Create 'installation finished' file
-  touch Data/Persistent/.installed_neos
-else
-  # Correct file permissions
-  ( exec /var/run/neos/setfilepermissions.sh root apache apache )
-
-  # Refresh assets and resources
-  echo "Checking if resource data exists for all known resource objects ..."
-  ./flow resource:clean &>/dev/null
-  ./flow resource:publish
-
-  # Update 'installation finished' file
-  touch Data/Persistent/.installed_neos
 fi
+
+# Correct file permissions
+( exec /var/run/neos/setfilepermissions.sh root apache apache )
+
+# Refresh assets and resources
+echo "Checking if resource data exists for all known resource objects ..."
+./flow resource:clean &>/dev/null
+./flow resource:publish
+
+# Create/Update 'installation finished' file
+touch Data/.installed_neos
 
 # Force flush caches
 ./flow flow:cache:flush -f

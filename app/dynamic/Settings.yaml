@@ -6,7 +6,7 @@ Neos:
         charset: 'utf8mb4'
         host: '%DB_HOST'
         user: '%DB_USER'
-        password: '%DB_PASSWORD'
+        password: '%DB_PASS'
         dbname: '%DB_NAME'
         port: '%DB_PORT'
     http:
