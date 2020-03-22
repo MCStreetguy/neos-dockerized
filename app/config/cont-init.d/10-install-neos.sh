@@ -9,7 +9,7 @@ fi
 
 if [ ! -f Packages/Libraries/autoload.php ]; then
   # Install Neos and dependencies
-  /usr/local/bin/composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --no-interaction --no-cache
+  /usr/local/bin/composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --no-interaction
 else
   # Update Neos and dependencies
   /usr/local/bin/composer update --prefer-dist --no-progress --no-suggest --optimize-autoloader --no-interaction
