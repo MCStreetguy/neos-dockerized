@@ -45,7 +45,7 @@ elif [ "$#" -ne 0 ]; then
   exit 1
 fi
 
-declare -ar NEOS_VERSION_TARGETS=( "^3.3" "^4.3" "dev-master" )
+declare -ar NEOS_VERSION_TARGETS=( "^3.0" "^3.1" "^3.2" "^3.3" "^4.0" "^4.1" "^4.2" "^4.3" "dev-master" )
 
 for NEOS_VERSION in "${NEOS_VERSION_TARGETS[@]}"; do
   if [ "$NEOS_VERSION" == "dev-master" ]; then
