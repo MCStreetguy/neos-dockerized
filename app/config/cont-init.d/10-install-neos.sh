@@ -6,15 +6,12 @@ cd /var/www/neos
 
 if [ ! -f composer.json ]; then
   # If no composer.json could be found in the Neos directory, create a new project
-  /usr/local/bin/composer create-project --no-progress --remove-vcs --no-install --no-interaction --no-cache neos/neos-base-distribution . "${NEOS_VERSION}"
+  /usr/local/bin/composer create-project --no-progress --remove-vcs --no-interaction --no-cache neos/neos-base-distribution . "${NEOS_VERSION}"
 fi
 
 if [ ! -f Packages/Libraries/autoload.php ]; then
   # Install Neos and dependencies
   /usr/local/bin/composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader --no-interaction
-else
-  # Update Neos and dependencies
-  /usr/local/bin/composer update --prefer-dist --no-progress --no-suggest --optimize-autoloader --no-interaction
 fi
 
 if [ ! -f Data/Persistent/.installed_neos ]; then
@@ -68,12 +65,6 @@ if [ ! -f Data/Persistent/.installed_neos ]; then
   ./flow resource:publish
   echo "Importing resources ..."
   ./flow media:importresources &>/dev/null
-  echo "Clearing previously generated thumbnails ..."
-  ./flow media:clearthumbnails &>/dev/null
-  echo "Creating thumbnails for all assets ..."
-  ./flow media:createthumbnails &>/dev/null
-  echo "Rendering all thumbnails ..."
-  ./flow media:renderthumbnails &>/dev/null
 
   # Create 'installation finished' file
   touch Data/Persistent/.installed_neos
@@ -85,14 +76,6 @@ else
   echo "Checking if resource data exists for all known resource objects ..."
   ./flow resource:clean &>/dev/null
   ./flow resource:publish
-  echo "Importing resources ..."
-  ./flow media:importresources &>/dev/null
-  echo "Clearing previously generated thumbnails ..."
-  ./flow media:clearthumbnails &>/dev/null
-  echo "Creating thumbnails for all assets ..."
-  ./flow media:createthumbnails &>/dev/null
-  echo "Rendering all thumbnails ..."
-  ./flow media:renderthumbnails &>/dev/null
 
   # Update 'installation finished' file
   touch Data/Persistent/.installed_neos
