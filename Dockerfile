@@ -57,6 +57,17 @@ COPY ./app/config/ /etc/
 # Add dynamic files
 COPY ./app/dynamic/Settings.yaml /var/www/neos/Configuration/
 
+# Ports & Volumes
+EXPOSE 80
+VOLUME [ "/var/www/neos/Data" ]
+
+# Setup required variable names to keep for environment isolation
+ENV KEEP_ENV "PUBLIC_DOMAIN PUBLIC_PORT FLOW_CONTEXT"
+
+# Appends Neos Version env var
+ARG NEOS_VERSION="^4.3"
+ENV NEOS_VERSION "${NEOS_VERSION}"
+
 # Build arguments for database connection
 ONBUILD ARG DB_HOST
 ONBUILD ARG DB_NAME=db_neos
@@ -84,14 +95,3 @@ ONBUILD RUN sed -i "s/%DB_HOST/${DB_HOST}/" /var/www/neos/Configuration/Settings
             sed -i "s/%DB_PASSWORD/${DB_PASS}/" /var/www/neos/Configuration/Settings.yaml && \
             sed -i "s/%DB_USER/${DB_USER}/" /var/www/neos/Configuration/Settings.yaml && \
             sed -i "s/%DB_PORT/${DB_PORT}/" /var/www/neos/Configuration/Settings.yaml
-
-# Ports & Volumes
-EXPOSE 80
-VOLUME [ "/var/www/neos/Data" ]
-
-# Setup required variable names to keep for environment isolation
-ENV KEEP_ENV "PUBLIC_DOMAIN PUBLIC_PORT FLOW_CONTEXT"
-
-# Appends Neos Version env var
-ARG NEOS_VERSION="^4.3"
-ENV NEOS_VERSION "${NEOS_VERSION}"
