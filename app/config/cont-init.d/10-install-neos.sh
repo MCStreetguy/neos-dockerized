@@ -20,10 +20,7 @@ fi
 
 if [ ! -f /var/run/neos/setfilepermissions.sh ]; then
   # Create fixed Neos file permissions script
-  mkdir -p /var/run/neos
-  cp ./Packages/Framework/Neos.Flow/Scripts/setfilepermissions.sh /var/run/neos/setfilepermissions.sh
-  sed -i 's/sudo -u/s6-setuidgid/' /var/run/neos/setfilepermissions.sh
-  sed -i 's/sudo //' /var/run/neos/setfilepermissions.sh
+  sed 's/sudo -u/s6-setuidgid/g s/sudo //g' ./Packages/Framework/Neos.Flow/Scripts/setfilepermissions.sh > /var/run/neos/setfilepermissions.sh
 fi
 
 if [ ! -f Data/.installed_neos ]; then
