@@ -1,0 +1,22 @@
+Neos:
+  Flow:
+    persistence:
+      backendOptions:
+        driver: 'pdo_mysql'
+        charset: 'utf8mb4'
+        host: '%DB_HOST'
+        user: '%DB_USER'
+        password: '%DB_PASSWORD'
+        dbname: '%DB_NAME'
+        port: '%DB_PORT'
+    http:
+      trustedProxies:
+        proxies:
+          - '%env:HOSTIP%'
+        headers:
+          clientIp: 'X-Forwarded-For'
+          host: 'X-Forwarded-Host'
+          port: 'X-Forwarded-Port'
+          proto: 'X-Forwarded-Proto'
+  Imagine:
+    driver: 'Imagick'
