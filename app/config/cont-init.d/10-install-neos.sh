@@ -1,5 +1,7 @@
 #!/usr/bin/with-contenv /bin/bash
 
+set -e
+
 cd /var/www/neos
 
 if [ ! -f composer.json ]; then
